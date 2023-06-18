@@ -46,7 +46,6 @@ def wavelet_transform(signal:numpy.ndarray):
 
     return coeffs
 
-
 if __name__=="__main__":
     # A Unit Test
     # Generate a complex-valued stationary random process

@@ -50,7 +50,7 @@ if __name__=="__main__":
     # A Unit Test
     # Generate a complex-valued stationary random process
     N = 1000  # Number of samples
-    signal = numpy.random.normal(0, 1, size=N) + 1j * numpy.random.normal(0, 1, size=N)
+    signal = numpy.random.normal(0, 1, size=(1, N, 2))
 
     # Perform the wavelet transform
     cumulants = cumulants(signal)

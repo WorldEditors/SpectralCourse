@@ -35,8 +35,8 @@ class DataLoader(object):
         numpy.random.shuffle(idxes)
         train_len = int(self.data_len * ratio)
         print("training data: %d, testing data: %d" % (train_len, self.data_len - train_len))
-        train_idxes = numpy.copy(idxes[:self.data_len])
-        test_idxes = numpy.copy(idxes[self.data_len:])
+        train_idxes = numpy.copy(idxes[:train_len])
+        test_idxes = numpy.copy(idxes[train_len:])
         return train_idxes, test_idxes
 
     def save_file(self, file_name, features, labels, snr):

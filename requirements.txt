@@ -1,0 +1,4 @@
+paddlepaddle-gpu==2.3.2
+matplotlib==3.7.1
+numpy==1.25.0
+PyWavelets==1.4.1

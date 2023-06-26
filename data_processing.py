@@ -2,6 +2,7 @@ import h5py
 import sys
 import numpy
 import matplotlib
+import time
 import argparse
 from high_order_statistics import cumulants, wavelet_transform
 from plot_tools import plot3D
@@ -112,12 +113,15 @@ def data_preprocessing(dataset, gen_dir):
     prt_ratio = 1.0
     cur_ratio = prt_ratio
     post_features = numpy.zeros((dataset.data_len, 4))
+    print("start_time", time.time())
     for r,X,Y,snr in dataset.get_batch(dataset.data_len, shuffle=False):
         c20, c40, c41, c42 = cumulants(X)
         post_features[:, 0] = c20
         post_features[:, 1] = c40
         post_features[:, 2] = c41
         post_features[:, 3] = c42
+    print("end_time", time.time())
+    sys.exit(1)
     train_idx, test_idx = dataset.split_file()
     dataset.save_file("%s/train.raw.dat"%gen_dir, dataset.features[train_idx], dataset.labels[train_idx], dataset.snr[train_idx])
     dataset.save_file("%s/test.raw.dat"%gen_dir, dataset.features[test_idx], dataset.labels[test_idx], dataset.snr[test_idx])

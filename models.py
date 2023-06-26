@@ -26,10 +26,11 @@ class MLPClassifier(Layer):
         self.act_hid = nn.ReLU()
         self.act_out = nn.Softmax()
         self.dropout = nn.Dropout(p=0.1)
+        self.fea_drop = paddle.to_tensor([[0, 0, 0, 1]])
     
     # 网络的前向计算
     def logits(self, inputs):
-        hid1 = self.dropout(self.act_hid(self.fc_in(inputs)))
+        hid1 = self.dropout(self.act_hid(self.fc_in(inputs * self.fea_drop)))
         hid2 = self.dropout(self.act_hid(self.fc_hid(hid1)))
         return self.fc_out(hid2)
 
@@ -70,6 +71,7 @@ class TransformerClassifier(Layer):
         
         # 定义一层全连接层，输入维度是13，输出维度是1
         self.fc_in = Linear(in_features=2, out_features=d_in)
+        self.pos_emb = paddle.create_parameter((1, 1024, d_in), dtype="float32")
         encoder_layer = TransformerEncoderLayer(d_model=d_hid, 
                 nhead=8, 
                 dim_feedforward=4 * d_hid,
@@ -83,7 +85,7 @@ class TransformerClassifier(Layer):
     
     # 网络的前向计算
     def logits(self, inputs):
-        hid1 = self.act_relu(self.fc_in(inputs))
+        hid1 = self.act_relu(self.fc_in(inputs) + self.pos_emb)
         hid2 = self.transformer(hid1)
         return self.fc_out(hid2[:, -1])
 

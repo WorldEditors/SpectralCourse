@@ -16,19 +16,18 @@ import math
 
 class MLPClassifier(Layer):
     def __init__(self, d_in=4, d_out=24, d_hid1=128, d_hid2=128):
-        # 初始化父类中的一些参数
         super(MLPClassifier, self).__init__()
         
-        # 定义一层全连接层，输入维度是13，输出维度是1
         self.fc_in = Linear(in_features=d_in, out_features=d_hid1)
         self.fc_hid = Linear(in_features=d_hid1, out_features=d_hid2)
         self.fc_out = Linear(in_features=d_hid2, out_features=d_out)
         self.act_hid = nn.ReLU()
         self.act_out = nn.Softmax()
         self.dropout = nn.Dropout(p=0.1)
-        self.fea_drop = paddle.to_tensor([[0, 0, 0, 1]])
+        
+        # 把fea_drop改为1/0/0/0 如果只想看C_20的效果，同理如果只想看C42 0/0/0/1
+        self.fea_drop = paddle.to_tensor([[1, 1, 1, 1]])
     
-    # 网络的前向计算
     def logits(self, inputs):
         hid1 = self.dropout(self.act_hid(self.fc_in(inputs * self.fea_drop)))
         hid2 = self.dropout(self.act_hid(self.fc_hid(hid1)))
@@ -36,7 +35,8 @@ class MLPClassifier(Layer):
 
     def forward(self, inputs):
         return self.act_out(self.logits(inputs))
-    #
+
+    # 损失函数
     def loss(self, inputs, labels):
         return F.softmax_with_cross_entropy(self.logits(inputs), labels, soft_label=True)
 
